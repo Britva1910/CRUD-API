@@ -1,4 +1,4 @@
-import { getAll, getNewUserData, saveNewUserData } from "../utils/users.utils";
+import { findUserById, getAll, getNewUserData, saveNewUserData } from "../utils/users.utils";
 import * as http from 'http';
 import { showInformationAboutResponse } from "../utils/server.utils";
 import { IUser } from "../models/users";
@@ -50,3 +50,21 @@ export const addUser = async (req: http.IncomingMessage, res: http.ServerRespons
 		console.error('Error getting all users:', error); //TODO change error message
 	}
 }
+
+export const getUserById = async (req: http.IncomingMessage, res: http.ServerResponse, id: string) => {
+	try {
+		const user = await findUserById(id);
+
+		if (user) {
+			res.writeHead(200, { 'Content-Type': 'application/json' });
+			res.end(JSON.stringify(user));
+		} else {
+			res.writeHead(404, { 'Content-Type': 'application/json' });
+			res.end(JSON.stringify({ message: 'This user doesn`t exist' }));
+		}
+
+		showInformationAboutResponse(req, res);
+	} catch (error) {
+		console.error('Error getting all users:', error);
+	}
+};

@@ -41,3 +41,18 @@ export const getNewUserData = (req: http.IncomingMessage): Promise<string> => {
 		}
 	});
 }
+
+export const findUserById = async (id: string): Promise<IUser | null> => {
+	const filePath = path.resolve(__dirname, '../../users.db.json');
+
+	const data = await fs.readFile(filePath, 'utf8');
+	const jsonData: IUser[] = JSON.parse(data);
+
+	const userData = jsonData.find(item => item.id === id);
+
+	if (userData) {
+		return userData;
+	} else {
+		return null;
+	}
+}
