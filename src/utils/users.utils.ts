@@ -56,3 +56,25 @@ export const findUserById = async (id: string): Promise<IUser | null> => {
 		return null;
 	}
 }
+
+export const deleteUserById = async (id: string): Promise<IUser[] | null> => {
+	try {
+		const filePath = path.resolve(__dirname, '../../users.db.json');
+
+		const data = await fs.readFile(filePath, 'utf8');
+
+		const jsonData: IUser[] = JSON.parse(data);
+
+		const newArr = jsonData.filter((item) => item.id !== id);
+
+		if (newArr.length === jsonData.length) {
+			return null;
+		} else {
+			await fs.writeFile(filePath, JSON.stringify(newArr));
+			return newArr;
+		}
+	} catch (error) {
+		console.log(error);
+		return null;
+	}
+}
