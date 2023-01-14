@@ -1,4 +1,4 @@
-import { deleteUserById, findUserById, getAll, getNewUserData, saveNewUserData } from "../utils/users.utils";
+import { deleteUserById, findUserById, getAll, getNewUserData, saveNewUserData, changeUserById } from "../utils/users.utils";
 import * as http from 'http';
 import { showInformationAboutResponse } from "../utils/server.utils";
 import { IUser } from "../models/users";
@@ -58,6 +58,25 @@ export const getUserById = async (req: http.IncomingMessage, res: http.ServerRes
 		if (user) {
 			res.writeHead(200, { 'Content-Type': 'application/json' });
 			res.end(JSON.stringify(user));
+		} else {
+			res.writeHead(404, { 'Content-Type': 'application/json' });
+			res.end(JSON.stringify({ message: 'This user doesn`t exist' }));
+		}
+
+		showInformationAboutResponse(req, res);
+	} catch (error) {
+		console.error('Error getting all users:', error);
+	}
+};
+
+export const changeUser = async (req: http.IncomingMessage, res: http.ServerResponse, id: string) => {
+	try {
+		const newUserData = await getNewUserData(req);
+		const currentUsersData = await changeUserById(id, JSON.parse(newUserData));
+
+		if (currentUsersData) {
+			res.writeHead(202, { 'Content-Type': 'application/json' });
+			res.end(JSON.stringify(currentUsersData));
 		} else {
 			res.writeHead(404, { 'Content-Type': 'application/json' });
 			res.end(JSON.stringify({ message: 'This user doesn`t exist' }));

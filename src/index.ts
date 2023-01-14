@@ -1,6 +1,6 @@
 import * as http from 'http';
 import dotenv from 'dotenv';
-import { getAllUsers, addUser, getUserById, deleteUser } from './controllers/users.controller';
+import { getAllUsers, addUser, getUserById, deleteUser, changeUser } from './controllers/users.controller';
 import { isUUID } from './utils/server.utils';
 import { showInformationAboutResponse } from './utils/server.utils';
 
@@ -23,7 +23,7 @@ const server = http.createServer((req, res) => {
 			if (req.method === 'GET') {
 				getUserById(req, res, id);
 			} else if (req.method === 'PUT') {
-				console.log('PUT with ID');
+				changeUser(req, res, id);
 			} else if (req.method === 'DELETE') {
 				deleteUser(req, res, id);
 			}
