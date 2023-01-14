@@ -1,6 +1,6 @@
 import * as http from 'http';
 import dotenv from 'dotenv';
-import { getAllUsers } from './controllers/users.controller';
+import { getAllUsers, addUser } from './controllers/users.controller';
 import { isUUID } from './utils/server.utils';
 import { showInformationAboutResponse } from './utils/server.utils';
 
@@ -11,6 +11,8 @@ const PORT = Number(process.env.PORT);
 const server = http.createServer((req, res) => {
 	if (req.url === '/api/users' && req.method === 'GET') {
 		getAllUsers(req, res);
+	} else if (req.url === '/api/users' && req.method === 'POST') {
+		addUser(req, res);
 	} else if (req.url?.match(/\/api\/users\/.+/)) {
 		const id: string = req.url.split('/')[3];
 		if (!isUUID(id)) {
