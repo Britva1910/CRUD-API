@@ -1,13 +1,14 @@
 import * as http from 'http';
-import users from "../../users.db.json";
 import { promises as fs } from 'fs';
 import path from 'path';
 import { IUser, IUserForChange } from "../models/users";
 
+export let userdDB: IUser[] = [];
+
 export const getAll = () => {
 	return new Promise((resolve, reject) => {
-		if (users) {
-			resolve(users);
+		if (userdDB) {
+			resolve(userdDB);
 		} else {
 			reject();
 		}
@@ -15,19 +16,12 @@ export const getAll = () => {
 }
 
 export const saveNewUserData = async (userData: IUser): Promise<void> => {
-	const filePath = path.resolve(__dirname, '../../users.db.json');
-
-	const data = await fs.readFile(filePath, 'utf8');
-	const jsonData = JSON.parse(data);
-	jsonData.push(userData);
-
-	await fs.writeFile(filePath, JSON.stringify(jsonData));
+	userdDB.push(userData);
 }
 
 export const getNewUserData = (req: http.IncomingMessage): Promise<string> => {
 	return new Promise((resolve, reject) => {
 		try {
-			//TODO add chack to it is JSON file
 			let body = '';
 
 			req.on('data', (chank: Buffer) => {
@@ -44,31 +38,28 @@ export const getNewUserData = (req: http.IncomingMessage): Promise<string> => {
 }
 
 export const findUserById = async (id: string): Promise<IUser | null> => {
-	const filePath = path.resolve(__dirname, '../../users.db.json');
+	try {
+		const userData = userdDB.find(item => item.id === id);
 
-	const data = await fs.readFile(filePath, 'utf8');
-	const jsonData: IUser[] = JSON.parse(data);
-
-	const userData = jsonData.find(item => item.id === id);
-
-	if (userData) {
-		return userData;
-	} else {
+		if (userData) {
+			return userData;
+		} else {
+			return null;
+		}
+	} catch (error) {
+		console.log(error);
 		return null;
 	}
 }
 
 export const deleteUserById = async (id: string): Promise<IUser[] | null> => {
 	try {
-		const filePath = path.resolve(__dirname, '../../users.db.json');
-		const data = await fs.readFile(filePath, 'utf8');
-		const jsonData: IUser[] = JSON.parse(data);
-		const newArr = jsonData.filter((item) => item.id !== id);
+		const newArr = userdDB.filter((item) => item.id !== id);
 
-		if (newArr.length === jsonData.length) {
+		if (newArr.length === userdDB.length) {
 			return null;
 		} else {
-			await fs.writeFile(filePath, JSON.stringify(newArr));
+			userdDB = newArr;
 			return newArr;
 		}
 	} catch (error) {
@@ -79,11 +70,8 @@ export const deleteUserById = async (id: string): Promise<IUser[] | null> => {
 
 export const changeUserById = async (id: string, newUserData: IUserForChange) => {
 	try {
-		const filePath = path.resolve(__dirname, '../../users.db.json');
-		const data = await fs.readFile(filePath, 'utf8');
-		const jsonData: IUser[] = JSON.parse(data);
 		let isUser = false;
-		const newArr = jsonData.map(item => {
+		const newArr = userdDB.map(item => {
 			if (item.id === id) {
 				isUser = true;
 				const newData = Object.keys(newUserData)
@@ -96,7 +84,7 @@ export const changeUserById = async (id: string, newUserData: IUserForChange) =>
 		});
 
 		if (isUser) {
-			await fs.writeFile(filePath, JSON.stringify(newArr));
+			userdDB = newArr;
 			return newArr;
 		} else {
 			return null;

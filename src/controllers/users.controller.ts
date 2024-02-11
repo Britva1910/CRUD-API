@@ -12,7 +12,7 @@ export const getAllUsers = async (req: http.IncomingMessage, res: http.ServerRes
 		res.end(JSON.stringify(users));
 		showInformationAboutResponse(req, res);
 	} catch (error) {
-		console.error('Error getting all users:', error);
+		console.log('Error getting all users:', error);
 	}
 };
 
@@ -47,7 +47,7 @@ export const addUser = async (req: http.IncomingMessage, res: http.ServerRespons
 		}
 	}
 	catch (error) {
-		console.error('Error getting all users:', error); //TODO change error message
+		console.log('Error getting all users:', error); //TODO change error message
 	}
 }
 
@@ -65,7 +65,7 @@ export const getUserById = async (req: http.IncomingMessage, res: http.ServerRes
 
 		showInformationAboutResponse(req, res);
 	} catch (error) {
-		console.error('Error getting all users:', error);
+		console.log('Error getting all users:', error);
 	}
 };
 
@@ -75,7 +75,7 @@ export const changeUser = async (req: http.IncomingMessage, res: http.ServerResp
 		const currentUsersData = await changeUserById(id, JSON.parse(newUserData));
 
 		if (currentUsersData) {
-			res.writeHead(202, { 'Content-Type': 'application/json' });
+			res.writeHead(200, { 'Content-Type': 'application/json' });
 			res.end(JSON.stringify(currentUsersData));
 		} else {
 			res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -84,7 +84,7 @@ export const changeUser = async (req: http.IncomingMessage, res: http.ServerResp
 
 		showInformationAboutResponse(req, res);
 	} catch (error) {
-		console.error('Error getting all users:', error);
+		console.log('Error getting all users:', error);
 	}
 };
 
@@ -94,7 +94,7 @@ export const deleteUser = async (req: http.IncomingMessage, res: http.ServerResp
 		const currentUsersData = await deleteUserById(id);
 
 		if (currentUsersData) {
-			res.writeHead(202, { 'Content-Type': 'application/json' });
+			res.writeHead(204, { 'Content-Type': 'application/json' });
 			res.end(JSON.stringify(currentUsersData));
 		} else {
 			res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -103,6 +103,6 @@ export const deleteUser = async (req: http.IncomingMessage, res: http.ServerResp
 
 		showInformationAboutResponse(req, res);
 	} catch (error) {
-		console.error('Error getting all users:', error);
+		console.log('Error getting all users:', error);
 	}
 };

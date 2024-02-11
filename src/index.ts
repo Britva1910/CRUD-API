@@ -3,12 +3,13 @@ import dotenv from 'dotenv';
 import { getAllUsers, addUser, getUserById, deleteUser, changeUser } from './controllers/users.controller';
 import { isUUID } from './utils/server.utils';
 import { showInformationAboutResponse } from './utils/server.utils';
+import { IUser } from './models/users';
 
 dotenv.config();
 
 const PORT = Number(process.env.PORT);
 
-const server = http.createServer((req, res) => {
+export const server = http.createServer((req, res) => {
 	if (req.url === '/api/users' && req.method === 'GET') {
 		getAllUsers(req, res);
 	} else if (req.url === '/api/users' && req.method === 'POST') {
